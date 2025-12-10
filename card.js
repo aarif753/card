@@ -43,30 +43,6 @@ function initializeApp() {
   
   // Set up card click handler
   setupCardInteraction();
-  
-  // Initialize share buttons
-  initializeShareButtons();
-}
-
-// Initialize share buttons
-function initializeShareButtons() {
-  // Add File Share button to the button group
-  const buttonGroup = document.querySelector('.button-group');
-  if (buttonGroup && !document.getElementById('fileShareBtn')) {
-    const fileShareBtn = document.createElement('button');
-    fileShareBtn.className = 'primary';
-    fileShareBtn.id = 'fileShareBtn';
-    fileShareBtn.innerHTML = '<i class="fas fa-share-square"></i> Share Standalone File';
-    fileShareBtn.onclick = generateFileShare;
-    
-    // Insert after Download button
-    const downloadBtn = buttonGroup.querySelector('button[onclick="downloadCard()"]');
-    if (downloadBtn) {
-      downloadBtn.parentNode.insertBefore(fileShareBtn, downloadBtn.nextSibling);
-    } else {
-      buttonGroup.appendChild(fileShareBtn);
-    }
-  }
 }
 
 // Initialize emoji selection
@@ -376,34 +352,37 @@ function updateSocialLinks() {
   }
 }
 
-// Generate standalone HTML file for sharing
-function generateStandaloneHTML() {
-  const frontMessage = document.getElementById('frontInput').value;
-  const imageUrl = document.getElementById('imageUrl').value.trim() || 'https://i.imgur.com/JqYeYn7.jpg';
-  const backTitle = document.getElementById('backTitle').value;
-  const backMessage = document.getElementById('backInput').value.replace(/\n/g, '<br>');
+// Download card as HTML file
+function downloadCard() {
+  if (!validateInputs()) {
+    showTemporaryMessage('Please fix errors before downloading', 'error');
+    return;
+  }
   
-  const instagram = document.getElementById('instagram').value.trim();
-  const facebook = document.getElementById('facebook').value.trim();
-  const twitter = document.getElementById('twitter').value.trim();
-  const youtube = document.getElementById('youtube').value.trim();
-  
-  // Generate social icons HTML
-  let socialIconsHTML = '';
-  if (instagram) socialIconsHTML += `<a href="${escapeHtml(instagram)}" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>`;
-  if (facebook) socialIconsHTML += `<a href="${escapeHtml(facebook)}" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>`;
-  if (twitter) socialIconsHTML += `<a href="${escapeHtml(twitter)}" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>`;
-  if (youtube) socialIconsHTML += `<a href="${escapeHtml(youtube)}" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>`;
-  
-  // Create emoji string for standalone file
-  const emojiString = selectedEmojis.length > 0 ? selectedEmojis.join(' ') : '🎉🎂🎈';
-  
-  return `<!DOCTYPE html>
+  try {
+    const frontMessage = document.getElementById('frontInput').value;
+    const imageUrl = document.getElementById('imageUrl').value.trim() || 'https://i.imgur.com/JqYeYn7.jpg';
+    const backTitle = document.getElementById('backTitle').value;
+    const backMessage = document.getElementById('backInput').value.replace(/\n/g, '<br>');
+    
+    const instagram = document.getElementById('instagram').value.trim();
+    const facebook = document.getElementById('facebook').value.trim();
+    const twitter = document.getElementById('twitter').value.trim();
+    const youtube = document.getElementById('youtube').value.trim();
+    
+    // Generate social icons HTML
+    let socialIconsHTML = '';
+    if (instagram) socialIconsHTML += `<a href="${escapeHtml(instagram)}" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>`;
+    if (facebook) socialIconsHTML += `<a href="${escapeHtml(facebook)}" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>`;
+    if (twitter) socialIconsHTML += `<a href="${escapeHtml(twitter)}" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>`;
+    if (youtube) socialIconsHTML += `<a href="${escapeHtml(youtube)}" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>`;
+    
+    const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday Card</title>
+    <title>Birthday Card</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -421,19 +400,11 @@ function generateStandaloneHTML() {
             align-items: center;
             min-height: 100vh;
             padding: 20px;
-            overflow-x: hidden;
         }
         
         .card-container {
             width: 100%;
             max-width: 500px;
-            text-align: center;
-        }
-        
-        .card-title {
-            color: white;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         
         .flip-card {
@@ -441,7 +412,6 @@ function generateStandaloneHTML() {
             width: 100%;
             height: 600px;
             perspective: 1000px;
-            margin: 0 auto;
         }
         
         .flip-card-inner {
@@ -449,14 +419,14 @@ function generateStandaloneHTML() {
             width: 100%;
             height: 100%;
             text-align: center;
-            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.8s;
             transform-style: preserve-3d;
             box-shadow: 0 15px 35px rgba(0,0,0,0.3);
             border-radius: 20px;
             cursor: pointer;
         }
         
-        .flip-card.flipped .flip-card-inner {
+        .flip-card:hover .flip-card-inner {
             transform: rotateY(180deg);
         }
         
@@ -544,93 +514,11 @@ function generateStandaloneHTML() {
             line-height: 1.6;
         }
         
-        .emoji-display {
-            font-size: 2rem;
-            margin: 20px 0;
-            letter-spacing: 5px;
-        }
-        
         .footer-note {
             margin-top: 30px;
             font-size: 0.9rem;
             color: #666;
             font-style: italic;
-        }
-        
-        .share-options {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .share-btn {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .share-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
-        }
-        
-        /* Random Emoji Animation */
-        .random-emoji {
-            position: fixed;
-            font-size: 3rem;
-            animation: floatEmoji 2s ease-out forwards;
-            pointer-events: none;
-            z-index: 1000;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        @keyframes floatEmoji {
-            0% {
-                opacity: 0;
-                transform: translateY(0) scale(0.5);
-            }
-            20% {
-                opacity: 1;
-                transform: translateY(-20px) scale(1.2);
-            }
-            80% {
-                opacity: 1;
-                transform: translateY(-100px) scale(1);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-150px) scale(0.5);
-            }
-        }
-        
-        /* Confetti */
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background-color: #f00;
-            opacity: 0.8;
-            animation: fall 5s linear forwards;
-            z-index: 999;
-            pointer-events: none;
-        }
-        
-        @keyframes fall {
-            to {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
         }
         
         @media (max-width: 600px) {
@@ -656,19 +544,12 @@ function generateStandaloneHTML() {
             .birthday-text {
                 font-size: 1.5rem;
             }
-            
-            .share-options {
-                flex-direction: column;
-                align-items: center;
-            }
         }
     </style>
 </head>
 <body>
     <div class="card-container">
-        <h1 class="card-title">🎉 Happy Birthday Card 🎉</h1>
-        
-        <div class="flip-card" id="standaloneFlipCard">
+        <div class="flip-card">
             <div class="flip-card-inner">
                 <div class="flip-card-front">
                     ${escapeHtml(frontMessage)}
@@ -677,406 +558,26 @@ function generateStandaloneHTML() {
                     <img src="${escapeHtml(imageUrl)}" alt="Birthday Person" class="profile-image" onerror="this.src='https://i.imgur.com/JqYeYn7.jpg'">
                     <div class="birthday-text">${escapeHtml(backTitle)}</div>
                     <div class="message">${backMessage}</div>
-                    <div class="emoji-display">${emojiString}</div>
                     ${socialIconsHTML ? `<div class="social-icons">${socialIconsHTML}</div>` : ''}
                     <div class="footer-note">Made with ❤️ using GreetingCard Maker</div>
                 </div>
             </div>
         </div>
-        
-        <div class="share-options">
-            <button class="share-btn" onclick="addConfettiEffect()">
-                <i class="fas fa-sparkles"></i> Add Confetti
-            </button>
-            <button class="share-btn" onclick="downloadThisCard()">
-                <i class="fas fa-download"></i> Download Card
-            </button>
-        </div>
     </div>
     
     <script>
-        // Initialize the standalone card
-        const emojis = ${JSON.stringify(selectedEmojis)};
-        let isFlipping = false;
-        
-        // Card flip functionality
-        document.getElementById('standaloneFlipCard').addEventListener('click', function() {
-            this.classList.toggle('flipped');
-            
-            // Show random emojis when flipping to back
-            if (this.classList.contains('flipped') && emojis.length > 0) {
-                showRandomEmojis();
-            }
+        // Add flip functionality
+        document.querySelector('.flip-card').addEventListener('click', function() {
+            this.querySelector('.flip-card-inner').style.transform = 
+                this.querySelector('.flip-card-inner').style.transform === 'rotateY(180deg)' 
+                ? 'rotateY(0deg)' 
+                : 'rotateY(180deg)';
         });
-        
-        // Show random emojis
-        function showRandomEmojis() {
-            if (emojis.length === 0 || isFlipping) return;
-            
-            isFlipping = true;
-            
-            // Create 3-5 random emojis
-            const emojiCount = Math.floor(Math.random() * 3) + 3;
-            
-            for (let i = 0; i < emojiCount; i++) {
-                setTimeout(() => {
-                    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
-                    createFloatingEmoji(emoji);
-                }, i * 200);
-            }
-            
-            setTimeout(() => {
-                isFlipping = false;
-            }, 1000);
-        }
-        
-        // Create floating emoji
-        function createFloatingEmoji(emoji) {
-            const emojiElement = document.createElement('div');
-            emojiElement.className = 'random-emoji';
-            emojiElement.textContent = emoji;
-            emojiElement.style.left = Math.random() * 80 + 10 + '%';
-            emojiElement.style.top = Math.random() * 80 + 10 + '%';
-            emojiElement.style.color = getRandomColor();
-            emojiElement.style.fontSize = Math.random() * 20 + 40 + 'px';
-            
-            document.body.appendChild(emojiElement);
-            
-            setTimeout(() => {
-                emojiElement.remove();
-            }, 2000);
-        }
-        
-        // Get random color
-        function getRandomColor() {
-            const colors = ['#FF5252', '#FF4081', '#E040FB', '#7C4DFF', '#536DFE', 
-                          '#448AFF', '#40C4FF', '#18FFFF', '#64FFDA', '#69F0AE'];
-            return colors[Math.floor(Math.random() * colors.length)];
-        }
-        
-        // Add confetti effect
-        function addConfettiEffect() {
-            const colors = ['#FF5252', '#FF4081', '#E040FB', '#7C4DFF', '#536DFE', 
-                          '#448AFF', '#40C4FF', '#18FFFF', '#64FFDA', '#69F0AE'];
-            
-            for (let i = 0; i < 100; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = Math.random() * 100 + 'vw';
-                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.width = Math.random() * 15 + 5 + 'px';
-                    confetti.style.height = Math.random() * 15 + 5 + 'px';
-                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-                    confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
-                    confetti.style.animationDelay = Math.random() * 1 + 's';
-                    
-                    document.body.appendChild(confetti);
-                    
-                    setTimeout(() => {
-                        if (confetti.parentNode) {
-                            confetti.remove();
-                        }
-                    }, 6000);
-                }, i * 10);
-            }
-            
-            showMessage('Confetti added! 🎉', '#4CAF50');
-        }
-        
-        // Download this card
-        function downloadThisCard() {
-            try {
-                const htmlContent = document.documentElement.outerHTML;
-                const blob = new Blob([htmlContent], { type: "text/html" });
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.download = "birthday_card_standalone.html";
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(link.href);
-                
-                showMessage('Card downloaded!', '#4CAF50');
-            } catch (error) {
-                showMessage('Download failed', '#F44336');
-            }
-        }
-        
-        // Share this card (Web Share API)
-        function shareThisCard() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Happy Birthday Card',
-                    text: 'Check out this beautiful birthday card!',
-                    url: window.location.href
-                })
-                .then(() => showMessage('Shared successfully!', '#4CAF50'))
-                .catch(error => showMessage('Share cancelled', '#FF9800'));
-            } else {
-                // Fallback: Copy URL to clipboard
-                navigator.clipboard.writeText(window.location.href)
-                    .then(() => showMessage('URL copied to clipboard!', '#4CAF50'))
-                    .catch(() => showMessage('Failed to copy URL', '#F44336'));
-            }
-        }
-        
-        // Show message
-        function showMessage(message, color) {
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message;
-            messageElement.style.cssText = \`
-                position: fixed;
-                bottom: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background-color: \${color};
-                color: white;
-                padding: 12px 24px;
-                border-radius: 6px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                z-index: 1000;
-                animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s forwards;
-                font-family: 'Poppins', sans-serif;
-            \`;
-            
-            document.body.appendChild(messageElement);
-            
-            setTimeout(() => {
-                if (messageElement.parentNode) {
-                    messageElement.remove();
-                }
-            }, 3000);
-        }
-        
-        // Add Web Share API button if supported
-        if (navigator.share) {
-            const shareOptions = document.querySelector('.share-options');
-            if (shareOptions) {
-                const shareBtn = document.createElement('button');
-                shareBtn.className = 'share-btn';
-                shareBtn.innerHTML = '<i class="fas fa-share-alt"></i> Share Card';
-                shareBtn.onclick = shareThisCard;
-                shareOptions.prepend(shareBtn);
-            }
-        }
     </script>
 </body>
 </html>`;
-}
-
-// Generate file share (NEW FUNCTION)
-function generateFileShare() {
-  if (!validateInputs()) {
-    showTemporaryMessage('Please fix errors before sharing file', 'error');
-    return;
-  }
-  
-  try {
-    // Generate the standalone HTML
-    const standaloneHTML = generateStandaloneHTML();
     
-    // Create a blob
-    const blob = new Blob([standaloneHTML], { type: "text/html" });
-    
-    // Create a temporary URL
-    const fileUrl = URL.createObjectURL(blob);
-    
-    // Create a dialog to share the file
-    const shareDialog = document.createElement('div');
-    shareDialog.className = 'share-dialog';
-    shareDialog.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.7);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-      animation: fadeIn 0.3s ease;
-    `;
-    
-    shareDialog.innerHTML = `
-      <div style="background: white; padding: 30px; border-radius: 15px; max-width: 500px; width: 90%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-        <h3 style="color: #6a11cb; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 10px;">
-          <i class="fas fa-share-square"></i> Share Standalone Card
-        </h3>
-        
-        <p style="margin-bottom: 25px; color: #555; line-height: 1.6;">
-          Your card has been converted to a standalone HTML file. Choose how you want to share it:
-        </p>
-        
-        <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px;">
-          <button id="downloadFileBtn" style="background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.3s;">
-            <i class="fas fa-download"></i> Download File (Share Manually)
-          </button>
-          
-          <button id="shareViaEmailBtn" style="background: linear-gradient(135deg, #EA4335 0%, #D14836 100%); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.3s;">
-            <i class="fas fa-envelope"></i> Share via Email
-          </button>
-          
-          <button id="copyFileUrlBtn" style="background: linear-gradient(135deg, #4285F4 0%, #1A73E8 100%); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.3s;">
-            <i class="fas fa-copy"></i> Copy File URL
-          </button>
-          
-          <button id="previewFileBtn" style="background: linear-gradient(135deg, #FBBC05 0%, #F9AB00 100%); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.3s;">
-            <i class="fas fa-eye"></i> Preview Card
-          </button>
-        </div>
-        
-        <button id="closeShareDialog" style="background: #f1f1f1; color: #555; border: none; padding: 10px 25px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.3s;">
-          Cancel
-        </button>
-      </div>
-      
-      <style>
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        
-        button:hover {
-          transform: translateY(-2px) !important;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
-        }
-      </style>
-    `;
-    
-    document.body.appendChild(shareDialog);
-    
-    // Add event listeners
-    document.getElementById('downloadFileBtn').onclick = function() {
-      const link = document.createElement('a');
-      link.href = fileUrl;
-      link.download = 'birthday_card_standalone.html';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showTemporaryMessage('File downloaded! Share it with friends.', 'success');
-      shareDialog.remove();
-      URL.revokeObjectURL(fileUrl);
-    };
-    
-    document.getElementById('shareViaEmailBtn').onclick = function() {
-      const subject = 'Check out this Birthday Card!';
-      const body = 'I created a special birthday card for you! Download the attached HTML file and open it in any browser to view it.';
-      
-      // Convert blob to base64 for email attachment (simulated)
-      const reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onloadend = function() {
-        // Note: Actual email attachment requires server-side processing
-        // For now, we'll just open mailto with instructions
-        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body + '\\n\\nFile is attached as birthday_card.html')}`;
-        window.location.href = mailtoLink;
-        showTemporaryMessage('Email client opened. Attach the downloaded file.', 'info');
-        shareDialog.remove();
-        URL.revokeObjectURL(fileUrl);
-      };
-    };
-    
-    document.getElementById('copyFileUrlBtn').onclick = function() {
-      // For blob URLs, we need a different approach
-      // Create a temporary download link instead
-      const tempLink = document.createElement('a');
-      tempLink.href = fileUrl;
-      tempLink.download = 'birthday_card.html';
-      
-      navigator.clipboard.writeText('Download the birthday card from the attached file').then(() => {
-        showTemporaryMessage('Instructions copied. Tell friends to download the file.', 'success');
-        shareDialog.remove();
-        URL.revokeObjectURL(fileUrl);
-      });
-    };
-    
-    document.getElementById('previewFileBtn').onclick = function() {
-      window.open(fileUrl, '_blank', 'noopener,noreferrer');
-      showTemporaryMessage('Card opened in new tab for preview', 'info');
-      shareDialog.remove();
-      // Don't revoke URL immediately as it's being used
-      setTimeout(() => URL.revokeObjectURL(fileUrl), 10000);
-    };
-    
-    document.getElementById('closeShareDialog').onclick = function() {
-      shareDialog.remove();
-      URL.revokeObjectURL(fileUrl);
-    };
-    
-    // Close on background click
-    shareDialog.onclick = function(e) {
-      if (e.target === shareDialog) {
-        shareDialog.remove();
-        URL.revokeObjectURL(fileUrl);
-      }
-    };
-    
-  } catch (error) {
-    console.error('Error generating file share:', error);
-    showTemporaryMessage('Error creating shareable file', 'error');
-  }
-}
-
-// ORIGINAL: Generate shareable URL (Page Share)
-function generateShareableURL() {
-  if (!validateInputs()) {
-    showTemporaryMessage('Please fix errors before generating URL', 'error');
-    return;
-  }
-  
-  try {
-    const cardData = {
-      frontMessage: document.getElementById('frontInput').value,
-      imageUrl: document.getElementById('imageUrl').value.trim() || 'https://i.imgur.com/JqYeYn7.jpg',
-      backTitle: document.getElementById('backTitle').value,
-      backMessage: document.getElementById('backInput').value,
-      instagram: document.getElementById('instagram').value.trim(),
-      facebook: document.getElementById('facebook').value.trim(),
-      twitter: document.getElementById('twitter').value.trim(),
-      youtube: document.getElementById('youtube').value.trim(),
-      selectedEmojis: selectedEmojis,
-      timestamp: Date.now(),
-      version: '1.0'
-    };
-    
-    // Encode data to base64
-    const jsonString = JSON.stringify(cardData);
-    const encodedData = btoa(encodeURIComponent(jsonString));
-    
-    // Create shareable URL
-    const baseUrl = window.location.origin + window.location.pathname;
-    const shareUrl = `${baseUrl}?card=${encodedData}`;
-    
-    // Display the URL
-    const urlInput = document.getElementById('shareableUrl');
-    const urlContainer = document.getElementById('generatedUrlContainer');
-    
-    urlInput.value = shareUrl;
-    urlContainer.style.display = 'block';
-    
-    // Scroll to URL section
-    urlContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    
-    showTemporaryMessage('Page URL generated! Share this link.', 'success');
-  } catch (error) {
-    console.error('Error generating URL:', error);
-    showTemporaryMessage('Error generating URL', 'error');
-  }
-}
-
-// Download card as HTML file (Original function)
-function downloadCard() {
-  if (!validateInputs()) {
-    showTemporaryMessage('Please fix errors before downloading', 'error');
-    return;
-  }
-  
-  try {
-    const standaloneHTML = generateStandaloneHTML();
-    
-    const blob = new Blob([standaloneHTML], { type: "text/html" });
+    const blob = new Blob([htmlContent], { type: "text/html" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = "birthday_card.html";
@@ -1244,7 +745,7 @@ function setupAutoSave() {
   });
 }
 
-// Upload image to Cloudinary (optional)
+// Upload image to Cloudinary
 async function uploadImage() {
   const input = document.createElement('input');
   input.type = 'file';
@@ -1313,6 +814,53 @@ async function uploadImage() {
   };
   
   input.click();
+}
+
+// Generate shareable URL
+function generateShareableURL() {
+  if (!validateInputs()) {
+    showTemporaryMessage('Please fix errors before generating URL', 'error');
+    return;
+  }
+  
+  try {
+    const cardData = {
+      frontMessage: document.getElementById('frontInput').value,
+      imageUrl: document.getElementById('imageUrl').value.trim() || 'https://i.imgur.com/JqYeYn7.jpg',
+      backTitle: document.getElementById('backTitle').value,
+      backMessage: document.getElementById('backInput').value,
+      instagram: document.getElementById('instagram').value.trim(),
+      facebook: document.getElementById('facebook').value.trim(),
+      twitter: document.getElementById('twitter').value.trim(),
+      youtube: document.getElementById('youtube').value.trim(),
+      selectedEmojis: selectedEmojis,
+      timestamp: Date.now(),
+      version: '1.0'
+    };
+    
+    // Encode data to base64
+    const jsonString = JSON.stringify(cardData);
+    const encodedData = btoa(encodeURIComponent(jsonString));
+    
+    // Create shareable URL
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = `${baseUrl}?card=${encodedData}`;
+    
+    // Display the URL
+    const urlInput = document.getElementById('shareableUrl');
+    const urlContainer = document.getElementById('generatedUrlContainer');
+    
+    urlInput.value = shareUrl;
+    urlContainer.style.display = 'block';
+    
+    // Scroll to URL section
+    urlContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    showTemporaryMessage('Shareable URL generated!', 'success');
+  } catch (error) {
+    console.error('Error generating URL:', error);
+    showTemporaryMessage('Error generating URL', 'error');
+  }
 }
 
 // Copy share URL to clipboard
