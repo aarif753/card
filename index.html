@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="https://schema.org/CreativeWork">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Create custom birthday cards online with personal messages, photos, and social links. Free digital greeting card maker with instant download feature.">
+<meta name="keywords" content="online birthday card maker, custom greeting cards, digital birthday card creator, personalized ecards, free card generator">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aarifalam.life/GreetingCard/greeting-card.html">
+<meta property="og:title" content="Free Online Birthday Card Maker | Custom Digital Greetings">
+<meta property="og:description" content="Create personalized birthday cards with photos and messages. Instant download and sharing features. Make unique digital greetings in minutes!">
+<meta property="og:image" content="https://aarifalam.life/images/greeting-card.jpg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Digital Birthday Card Creator - Make Custom Cards Online">
+<meta name="twitter:description" content="Free tool to design personalized birthday cards with photos and social links. Download or share digital greetings instantly.">
+<meta name="twitter:image" content="https://aarifalam.life/images/greeting-card-twitter.jpg">
+
+<title>Free Birthday Card Maker: Create Custom Digital Greetings Online</title>
+
+<!-- Preload Important Resources -->
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600&family=Poppins:wght@400;600;700&display=swap" as="font" crossorigin>
+
+<link rel="canonical" href="https://aarifalam.life/GreetingCard/greeting-card.html">
+<link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+<meta name="robots" content="index, follow">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "Online Birthday Card Maker",
+  "description": "Digital tool for creating personalized birthday greeting cards",
+  "url": "https://aarifalam.life/GreetingCard/greeting-card.html",
+  "image": "https://aarifalam.life/images/greeting-card-schema.jpg",
+  "creator": {
+    "@type": "Person",
+    "name": "Aarif Alam",
+    "sameAs": "https://aarifalam.life"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock"
+  }
+}
+</script>
+
+<!-- CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="card.css">
+</head>
+<body>
+
+<header class="main-header">
+  <div class="header-container">
+    <a href="#" class="logo">
+      <i class="fas fa-birthday-cake"></i>
+      <span>GreetingCard Maker</span>
+    </a>
+    <nav>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="#"><i class="fas fa-star"></i> Features</a></li>
+        <li><a href="#"><i class="fas fa-question-circle"></i> Help</a></li>
+        <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
+      </ul>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="card-container">
+    <div class="flip-card" id="flipCard">
+      <div class="flip-card-inner" id="cardContainer">
+        <div class="flip-card-front" id="frontMessage">
+          🎉 HAPPY BIRTHDAY! 🎉
+        </div>
+        <div class="flip-card-back" id="backMessage">
+          <img alt="Birthday Person" class="profile-image" id="profileImage" src="https://i.imgur.com/JqYeYn7.jpg" onerror="this.src='https://i.imgur.com/JqYeYn7.jpg'">
+          <div class="birthday-text" id="birthdayText">To My Amazing Friend!</div>
+          <div id="backText">
+            Wishing you a day filled with happiness and a year filled with joy! 
+            May all your dreams come true on this special day.
+          </div>
+          <div class="social-icons" id="socialIcons">
+            <!-- Social icons will be generated here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="editor-container">
+    <div class="editor">
+      <h3><i class="fas fa-edit"></i> Customize Birthday Card</h3>
+      
+      <div class="form-group">
+        <label for="frontInput"><i class="fas fa-font"></i> Front Message:</label>
+        <input id="frontInput" placeholder="Enter front message" type="text" value="🎉 HAPPY BIRTHDAY! 🎉">
+        <div class="error-message" id="frontError"></div>
+      </div>
+      
+      <div class="form-group">
+        <label for="imageUrl"><i class="fas fa-image"></i> Profile Image URL:</label>
+        <input id="imageUrl" placeholder="Paste image URL here" type="text" value="https://i.imgur.com/JqYeYn7.jpg">
+        <div class="error-message" id="imageError"></div>
+      </div>
+      
+      <div class="form-group">
+        <label for="backTitle"><i class="fas fa-heading"></i> Back Title:</label>
+        <input id="backTitle" placeholder="Enter back title" type="text" value="To My Amazing Friend!">
+        <div class="error-message" id="titleError"></div>
+      </div>
+      
+      <div class="form-group">
+        <label for="backInput"><i class="fas fa-comment"></i> Back Message:</label>
+        <textarea id="backInput" placeholder="Enter your birthday message" rows="4">Wishing you a day filled with happiness and a year filled with joy! 
+May all your dreams come true on this special day.</textarea>
+        <div class="error-message" id="messageError"></div>
+      </div>
+      
+      <div class="form-group">
+        <label><i class="fas fa-share-alt"></i> Social Media Links:</label>
+        <div class="social-inputs">
+          <input id="instagram" placeholder="Instagram URL" type="url">
+          <input id="facebook" placeholder="Facebook URL" type="url">
+          <input id="twitter" placeholder="Twitter URL" type="url">
+          <input id="youtube" placeholder="YouTube URL" type="url">
+        </div>
+        <div class="error-message" id="socialError"></div>
+      </div>
+      
+      <div class="button-group">
+        <button class="primary" onclick="updateCard()">
+          <i class="fas fa-sync-alt"></i> Update Card
+        </button>
+        <button class="secondary" onclick="downloadCard()">
+          <i class="fas fa-download"></i> Download Card
+        </button>
+        <button class="accent" onclick="addConfetti()">
+          <i class="fas fa-sparkles"></i> Add Confetti!
+        </button>
+      </div>
+    </div>
+
+    <div class="image-upload-section">
+      <button class="upload-btn" onclick="uploadImage()">
+        <i class="fas fa-cloud-upload-alt"></i> Upload Image to Cloud
+      </button>
+      <div class="upload-progress" id="uploadProgress" style="display: none;">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <span id="progressText">0%</span>
+      </div>
+    </div>
+
+    <div class="emoji-section">
+      <h4><i class="fas fa-smile"></i> Select Emojis for Random Display (on flip)</h4>
+      <div class="emoji-selector" id="emojiSelector">
+        <div class="emoji-option" data-emoji="🎉">🎉</div>
+        <div class="emoji-option" data-emoji="🎂">🎂</div>
+        <div class="emoji-option" data-emoji="🎈">🎈</div>
+        <div class="emoji-option" data-emoji="🎁">🎁</div>
+        <div class="emoji-option" data-emoji="✨">✨</div>
+        <div class="emoji-option" data-emoji="🥳">🥳</div>
+        <div class="emoji-option" data-emoji="🎊">🎊</div>
+        <div class="emoji-option" data-emoji="❤️">❤️</div>
+        <div class="emoji-option" data-emoji="⭐">⭐</div>
+        <div class="emoji-option" data-emoji="🎵">🎵</div>
+      </div>
+      <div class="selected-emojis" id="selectedEmojis">
+        <p>Selected emojis: 🎉 🎂 🎈 🎁 ✨</p>
+      </div>
+    </div>
+
+    <div class="share-section">
+      <button class="share-btn" onclick="generateShareableURL()">
+        <i class="fas fa-share-alt"></i> Generate Shareable URL
+      </button>
+      <div class="generated-url" id="generatedUrlContainer" style="display: none;">
+        <p><i class="fas fa-link"></i> Share this link:</p>
+        <div class="url-display">
+          <input type="text" id="shareableUrl" readonly>
+          <button class="copy-btn" onclick="copyShareUrl()"><i class="fas fa-copy"></i> Copy</button>
+          <button class="open-btn" onclick="testShareUrl()"><i class="fas fa-external-link-alt"></i> Open</button>
+        </div>
+        <p class="url-note">Anyone with this link can view and download your card</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-content">
+    <div class="footer-links">
+      <a href="#"><i class="fas fa-home"></i> Home</a>
+      <a href="#"><i class="fas fa-info-circle"></i> About</a>
+      <a href="#"><i class="fas fa-envelope"></i> Contact</a>
+      <a href="#"><i class="fas fa-shield-alt"></i> Privacy</a>
+      <a href="#"><i class="fas fa-file-contract"></i> Terms</a>
+    </div>
+    <div class="footer-text">
+      <p>© 2024 GreetingCard Maker. All rights reserved.</p>
+      <p>Made with <i class="fas fa-heart" style="color: #e91e63;"></i> by Aarif Alam</p>
+    </div>
+  </div>
+</footer>
+
+<script src="card.js"></script>
+</body>
+</html>
